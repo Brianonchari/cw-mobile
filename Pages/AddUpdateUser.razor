@@ -1,0 +1,118 @@
+﻿@page "/adduser"
+@page "/updateuser/{id:int}"
+@using CW.Services;
+@using CW.Models;
+@using CW;
+@inject IUserService UserService;
+
+<h3>AddUpdateUser</h3>
+
+<form class="user-form">
+
+
+    <div class="form-group">
+        <label>First Name</label>
+        <input @bind="firstName" class="form-control" placeholder="First Name" />
+    </div>
+
+    <div class="mt-2 form-group">
+        <label>Last Name</label>
+        <input @bind="lastName" class="form-control" placeholder="Last Name" />
+    </div>
+    <div class="mt-2 form-group">
+        <label>Email Address</label>
+        <input @bind="emailAddress" class="form-control" placeholder="Email Address" />
+    </div>
+
+    <div class="mt-2 form-group">
+        <label>Age</label>
+        <input @bind="age" class="form-control" placeholder="Age" />
+    </div>
+
+    <div class="mt-2 form-group">
+        <label>Date Of Birth</label>
+        <input @bind="dateOfBirth" class="form-control" placeholder="Date Of Birth" />
+    </div>
+
+
+
+    <button @onclick="AddUpdateUserDetails" type="submit" class="mt-2 btn btn-primary">Submit</button>
+</form>
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+
+    private string firstName;
+    private string lastName;
+    private string emailAddress;
+    private int age;
+    private DateTime dateOfBirth;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(id > 0)
+        {
+            var exitingUserDetails = await UserService.getUserById(id);
+            if(exitingUserDetails?.Id> 0)
+            {
+                firstName = exitingUserDetails.FirstName;
+                lastName = exitingUserDetails.LastName;
+                emailAddress = exitingUserDetails.EmailAddress;
+                age = exitingUserDetails.Age;
+                dateOfBirth = exitingUserDetails.BirthDate;
+            }
+        }
+
+    }
+
+    private async void AddUpdateUserDetails()
+    {
+        var addpdateUser = new AddUpdateUserRequest
+            {
+                Id = id,
+                FirstName =firstName,
+                LastName = lastName,
+                EmailAddress = emailAddress,
+                Age = age,
+                BirthDate = dateOfBirth
+
+        };
+
+        if (id > 0)
+        {
+            var response = await UserService.updateuser(id, addpdateUser);
+            if (response == true)
+            {
+                firstName = lastName = emailAddress = string.Empty;
+                age = 0;
+                dateOfBirth = DateTime.Now;
+                this.StateHasChanged();
+                await App.Current.MainPage.DisplayAlert("Record Added", "Record updated successfully", "Ok");
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("Error !", "Unable to add user. Please try again!", "Ok");
+            }
+        }
+        else
+        {
+            var response = await UserService.AddUser(addpdateUser);
+            if (response == true)
+            {
+                firstName = lastName = emailAddress = string.Empty;
+                age = 0;
+                dateOfBirth = DateTime.Now;
+                this.StateHasChanged();
+                await App.Current.MainPage.DisplayAlert("Record Added", "Record added successfully", "Ok");
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("Error !", "Unable to add user. Please try again!", "Ok");
+            }
+        }
+
+    }
+}
