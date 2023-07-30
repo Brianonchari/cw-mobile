@@ -31,7 +31,7 @@
 
     <div class="mt-2 form-group">
         <label>Date Of Birth</label>
-        <input @bind="dateOfBirth" class="form-control" placeholder="Date Of Birth" />
+        <input @bind="dateOfBirth" class="form-control" placeholder="Date Of Birth" type="date" />
     </div>
 
 
@@ -49,7 +49,7 @@
     private string lastName;
     private string emailAddress;
     private int age;
-    private DateTime dateOfBirth;
+    private DateOnly dateOfBirth;
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,7 +88,7 @@
             {
                 firstName = lastName = emailAddress = string.Empty;
                 age = 0;
-                dateOfBirth = DateTime.Now;
+                dateOfBirth = DateOnly.MinValue;
                 this.StateHasChanged();
                 await App.Current.MainPage.DisplayAlert("Record Added", "Record updated successfully", "Ok");
             }
@@ -104,13 +104,13 @@
             {
                 firstName = lastName = emailAddress = string.Empty;
                 age = 0;
-                dateOfBirth = DateTime.Now;
+                dateOfBirth = DateOnly.MaxValue;
                 this.StateHasChanged();
                 await App.Current.MainPage.DisplayAlert("Record Added", "Record added successfully", "Ok");
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Error !", "Unable to add user. Please try again!", "Ok");
+                await App.Current.MainPage.DisplayAlert("Error !", "Unable to add user. Please enter all the details and  try again!", "Ok");
             }
         }
 
