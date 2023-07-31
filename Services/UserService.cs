@@ -13,7 +13,7 @@ namespace CW.Services
 {
 	public class UserService : IUserService
 	{
-		private string _baseUrl = "https://c9de-105-163-156-122.ngrok-free.app";
+		private string _baseUrl = "https://f679-197-248-98-3.ngrok-free.app";
         private readonly ILogger<UserService> _logger;
 
             public UserService(ILogger<UserService> logger)
